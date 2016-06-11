@@ -3,8 +3,9 @@
 module Main where
 import Control.Lens
 import Data.Monoid ((<>))
-import Data.Maybe (isJust, isNothing)
-import Debug.Trace (trace)
+import Data.Maybe (isJust)
+
+data Gender = Male | Female deriving (Eq, Show)
 
 data Course = Course {
   _couName :: String
@@ -14,7 +15,8 @@ makeLenses ''Course
 
 data Student = Student {
   _stuName :: String,
-  _stuCourses :: [Course]
+  _stuCourses :: [Course],
+  _stuGender :: Gender
 } deriving (Eq, Show)
 
 makeLenses ''Student
@@ -41,15 +43,23 @@ main =
   let courses = Course <$> ["a", "b", "c"]
       mat = Student {
         _stuName = "Matthias",
-        _stuCourses = courses
+        _stuCourses = courses,
+        _stuGender = Male
+      }
+      tina = Student {
+        _stuName = "Tina",
+        _stuCourses = Course <$> ["x", "e"],
+        _stuGender = Female
       }
       bernd = Student {
         _stuName = "Bernd",
-        _stuCourses = Course <$> ["a", "e"]
+        _stuCourses = Course <$> ["a", "e"],
+        _stuGender = Male
       }
       gust = Student {
         _stuName = "Gustav",
-        _stuCourses = Course <$> ["b", "e"]
+        _stuCourses = Course <$> ["b", "e"],
+        _stuGender = Male
       }
       prof = Prof {
         _profName = "Prof. X",
@@ -57,10 +67,13 @@ main =
       }
   in do
    print mat
-   let students = [mat, bernd, gust]
+   let students = [mat, bernd, gust, tina]
    putStrLn $ "Students of prof: " <> show (studentsOfProf prof students)
    putStrLn "Adding a course to all students of prof"
    let added = over (studentsOfProfTraversal prof . stuCourses) (<> [Course "new one"]) students
    putStrLn $ "Result: " <> show added
    let added2 = students & (studentsOfProfTraversal prof . stuCourses) %~ (<> [Course "new one"])
    putStrLn $ "Inlined: " <> show added2
+   putStrLn "Adding a postfix to the name of all male students of prof"
+   let postfixAdded = students & over (studentsOfProfTraversal prof . filtered (\student -> Male == view stuGender student) . stuName) (<> "!MALE!")
+   print $ show postfixAdded

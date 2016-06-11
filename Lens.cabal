@@ -23,4 +23,4 @@ executable Lens-exe
 
 source-repository head
   type:     git
-  location: https://github.com/2chilled/Lens
+  location: https://github.com/2chilled/play-with-lenses
