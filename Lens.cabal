@@ -1,6 +1,6 @@
 name:                Lens
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            Just my playground for the Haskell lens library 
 description:         Please see README.md
 homepage:            https://github.com/2chilled/Lens#readme
 license:             BSD3
