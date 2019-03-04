@@ -31,15 +31,15 @@ makeLenses ''Prof
 traverseCourses :: Traversal' Student Course
 traverseCourses = stuCourses . each
 
-studentsOfProfTraversal prof = 
+studentsOfProfTraversal prof =
   let profCourses = _profCourses prof
-  in each . filtered (isJust . findOf (stuCourses . each) (`elem` profCourses)) 
+  in each . filtered (isJust . findOf (stuCourses . each) (`elem` profCourses))
 
 studentsOfProf :: Prof -> [Student] -> [Student]
-studentsOfProf prof = toListOf (studentsOfProfTraversal prof) 
+studentsOfProf prof = toListOf (studentsOfProfTraversal prof)
 
 main :: IO ()
-main = 
+main =
   let courses = Course <$> ["a", "b", "c"]
       mat = Student {
         _stuName = "Matthias",
